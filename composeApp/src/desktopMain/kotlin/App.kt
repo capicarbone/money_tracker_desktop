@@ -13,14 +13,24 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import moneytracker.composeapp.generated.resources.Res
 import moneytracker.composeapp.generated.resources.compose_multiplatform
+import java.io.File
 
 @Composable
 @Preview
 fun App() {
+
+    val workingDirectory = System.getProperty("user.dir")
+    val scriptLocation = File("$workingDirectory/money_tracker_cli")
+    val mt = MoneyTrackerCLI(scriptLocation, "sqlite::test.db")
+
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(onClick = { showContent = !showContent }) {
+            Button(onClick = {
+                showContent = !showContent
+                val result = mt.accounts.create("From kotlin")
+                println(result)
+            }) {
                 Text("Click me!")
             }
             AnimatedVisibility(showContent) {
